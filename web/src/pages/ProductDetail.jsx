@@ -7,16 +7,36 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const nav = useNavigate();
 
+  const isLoggedIn = !!localStorage.getItem("token");
+
   useEffect(() => {
     API.get(`/products/${id}`).then((res) => setProduct(res.data));
   }, [id]);
 
+  // 🔐 Check login before action
+  const requireAuth = () => {
+    if (!isLoggedIn) {
+      alert("Please login first");
+      nav("/login");
+      return false;
+    }
+    return true;
+  };
+
   const toggleFavorite = async () => {
-    await API.post(`/products/favorite/${id}`);
-    alert("Favorite toggled");
+    if (!requireAuth()) return;
+
+    try {
+      await API.post(`/products/favorite/${id}`);
+      alert("Favorite toggled");
+    } catch (err) {
+      alert("Something went wrong");
+    }
   };
 
   const handleDelete = async () => {
+    if (!requireAuth()) return;
+
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this product?"
     );
@@ -32,6 +52,11 @@ export default function ProductDetail() {
     }
   };
 
+  const handleUpdate = () => {
+    if (!requireAuth()) return;
+    nav(`/update-product/${product._id}`);
+  };
+
   if (!product)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -43,7 +68,6 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
       <div className="max-w-4xl w-full bg-white rounded-2xl shadow-lg p-8 grid md:grid-cols-2 gap-8">
         
-        {/* Product Image */}
         <div className="flex items-center justify-center">
           <img
             src={product.image}
@@ -52,7 +76,6 @@ export default function ProductDetail() {
           />
         </div>
 
-        {/* Product Info */}
         <div className="flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             {product.title}
@@ -66,7 +89,6 @@ export default function ProductDetail() {
             ₹{product.price}
           </p>
 
-          {/* Action Buttons */}
           <div className="flex flex-wrap gap-3">
             
             <button
@@ -77,7 +99,7 @@ export default function ProductDetail() {
             </button>
 
             <button
-              onClick={() => nav(`/update-product/${product._id}`)}
+              onClick={handleUpdate}
               className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition"
             >
               Update
