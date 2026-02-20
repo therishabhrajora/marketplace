@@ -1,64 +1,43 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import API from "../api/axios";
 
-
-const AddProduct = () => {
+export default function AddProduct() {
   const [form, setForm] = useState({
     title: "",
     price: "",
     description: "",
-    image: "",
+    image: ""
   });
 
-  const token = localStorage.getItem("token"); // JWT token
-
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    await API.post("/products", form);
+    alert("Product created");
 
-    try {
-      const res = await API.post(
-        "/products",
-        form,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      alert("Product added successfully!");
-      console.log(res.data);
-
-      // reset form
-      setForm({
-        title: "",
-        price: "",
-        description: "",
-        image: "",
-      });
-    } catch (err) {
-      console.error(err.response?.data || err.message);
-      alert("Error adding product");
-    }
+    // Reset form
+    setForm({
+      title: "",
+      price: "",
+      description: "",
+      image: ""
+    });
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+        
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           Add Product
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+
           <input
-            type="text"
             name="title"
             placeholder="Product Title"
             value={form.title}
@@ -68,8 +47,8 @@ const AddProduct = () => {
           />
 
           <input
-            type="number"
             name="price"
+            type="number"
             placeholder="Price"
             value={form.price}
             onChange={handleChange}
@@ -82,13 +61,12 @@ const AddProduct = () => {
             placeholder="Description"
             value={form.description}
             onChange={handleChange}
-            required
             rows="4"
+            required
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           <input
-            type="text"
             name="image"
             placeholder="Image URL"
             value={form.image}
@@ -103,10 +81,9 @@ const AddProduct = () => {
           >
             Add Product
           </button>
+
         </form>
       </div>
     </div>
   );
-};
-
-export default AddProduct;
+}

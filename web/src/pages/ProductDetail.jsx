@@ -1,14 +1,36 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const nav = useNavigate();
 
   useEffect(() => {
-    API.get(`/products/${id}`).then(res => setProduct(res.data));
+    API.get(`/products/${id}`).then((res) => setProduct(res.data));
   }, [id]);
+
+  const toggleFavorite = async () => {
+    await API.post(`/products/favorite/${id}`);
+    alert("Favorite toggled");
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await API.delete(`/products/${id}`);
+      alert("Product deleted successfully!");
+      nav("/products");
+    } catch (err) {
+      alert("Delete failed");
+    }
+  };
 
   if (!product)
     return (
@@ -26,7 +48,7 @@ export default function ProductDetail() {
           <img
             src={product.image}
             alt={product.title}
-            className="w-full max-w-xs object-contain"
+            className="h-72 object-contain"
           />
         </div>
 
@@ -40,15 +62,36 @@ export default function ProductDetail() {
             {product.description}
           </p>
 
-          <h3 className="text-2xl font-semibold text-blue-600 mb-6">
+          <p className="text-2xl font-bold text-blue-600 mb-6">
             ₹{product.price}
-          </h3>
+          </p>
 
-          <button className="w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-            Add to Cart
-          </button>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3">
+            
+            <button
+              onClick={toggleFavorite}
+              className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              ❤️ Favorite
+            </button>
+
+            <button
+              onClick={() => nav(`/update-product/${product._id}`)}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              Update
+            </button>
+
+            <button
+              onClick={handleDelete}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              Delete
+            </button>
+
+          </div>
         </div>
-
       </div>
     </div>
   );

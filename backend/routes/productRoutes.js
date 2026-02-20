@@ -7,6 +7,12 @@ const { createProduct } = require("../controllers/productController");
 // Create product
 router.post("/", auth, createProduct);
 
+// 🔥 Get My Favorites (MOVE THIS UP)
+router.get("/favorites/my", auth, async (req, res) => {
+  const user = await User.findById(req.user.id).populate("favorites");
+  res.json(user.favorites);
+});
+
 // Favorite toggle
 router.post("/favorite/:id", auth, async (req, res) => {
   const user = await User.findById(req.user.id);
@@ -23,7 +29,7 @@ router.post("/favorite/:id", auth, async (req, res) => {
   res.json(user.favorites);
 });
 
-// Get products with search + pagination
+// Get products
 router.get("/", async (req, res) => {
   const { search = "", page = 1, limit = 10 } = req.query;
 
@@ -38,7 +44,7 @@ router.get("/", async (req, res) => {
   res.json(products);
 });
 
-// Get single product
+// ❗ KEEP THIS LAST
 router.get("/:id", async (req, res) => {
   const product = await Product.findById(req.params.id);
   res.json(product);
