@@ -7,7 +7,9 @@ const connectDB = require("./config/db");
 const app = express();
 
 // Connect DB
-connectDB();
+connectDB().then(() => {
+  autoSeed();
+});
 
 // Middleware
 app.use(cors());
