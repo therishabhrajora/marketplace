@@ -32,7 +32,7 @@ https://mobileappone.netlify.app
 
 ### Mobile App (APK)
 
-(Add your Expo build link here)
+https://expo.dev/accounts/therishabhrajora/projects/mobile/builds/51a56071-7013-4fae-801a-231ab1303a7e
 
 ---
 
