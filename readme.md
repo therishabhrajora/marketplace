@@ -18,17 +18,11 @@ This project includes:
 
 ### Backend API
 
-```
 https://marketplace-ysbx.onrender.com
-```
 
 ### Web App
 
-(Replace with your Netlify link)
-
-```
 https://mobileappone.netlify.app
-```
 
 ### Mobile App (APK)
 
@@ -107,13 +101,6 @@ cd marketplace
 ```bash
 cd backend
 npm install
-```
-
-### Create `.env` file inside backend folder
-
-```
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
 ```
 
 ### Start Backend Server
