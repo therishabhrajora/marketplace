@@ -3,6 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
+const autoSeed = require("./seed/seed");
 
 const app = express();
 
